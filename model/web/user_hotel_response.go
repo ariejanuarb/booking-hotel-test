@@ -1,7 +1,7 @@
 package web
 
 type UserHotelResponse struct {
-	Id            int `json:"id"`
+	Id            int `json:"assignation_number"`
+	UserProfileId int `json:"employee_id"`
 	HotelId       int `json:"hotel_id"`
-	UserProfileId int `json:"user_profile_id"`
 }

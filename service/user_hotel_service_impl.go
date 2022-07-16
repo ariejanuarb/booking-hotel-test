@@ -57,7 +57,6 @@ func (service *UserHotelServiceImpl) Update(ctx context.Context, request web.Use
 	}
 
 	userHotel.HotelId = request.HotelId
-	userHotel.UserProfileId = request.UserProfileId
 
 	userHotel = service.UserHotelRepository.Update(ctx, tx, userHotel)
 

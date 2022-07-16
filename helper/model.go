@@ -20,45 +20,13 @@ func ToCategoryResponses(categories []domain.Category) []web.CategoryResponse {
 	return categoryResponses
 }
 
-func ToRoleResponse(role domain.Role) web.RoleResponse {
-	return web.RoleResponse{
-		Id:   role.Id,
-		Type: role.Type,
-	}
-}
-
-func ToRoleResponses(roles []domain.Role) []web.RoleResponse {
-	var roleResponses []web.RoleResponse
-	for _, role := range roles {
-		roleResponses = append(roleResponses, ToRoleResponse(role))
-	}
-	return roleResponses
-}
-
-func ToUserRoleResponse(userRole domain.UserRole) web.UserRoleResponse {
-	return web.UserRoleResponse{
-		Id:            userRole.Id,
-		RoleId:        userRole.RoleId,
-		UserProfileId: userRole.UserProfileId,
-	}
-}
-
-func ToUserRoleResponses(userRoles []domain.UserRole) []web.UserRoleResponse {
-	var userRoleResponses []web.UserRoleResponse
-	for _, userRole := range userRoles {
-		userRoleResponses = append(userRoleResponses, ToUserRoleResponse(userRole))
-	}
-	return userRoleResponses
-}
-
 func ToUserProfileResponse(userProfile domain.UserProfile) web.UserProfileResponse {
 	return web.UserProfileResponse{
-		Id:              userProfile.Id,
-		Email:           userProfile.Email,
-		Password:        userProfile.Password,
-		Name:            userProfile.Name,
-		Gender:          userProfile.Gender,
-		AssignedToHotel: userProfile.AssignedToHotel,
+		Id:       userProfile.Id,
+		Email:    userProfile.Email,
+		Password: userProfile.Password,
+		Name:     userProfile.Name,
+		Gender:   userProfile.Gender,
 	}
 }
 
@@ -73,8 +41,8 @@ func ToUserProfileResponses(userProfiles []domain.UserProfile) []web.UserProfile
 func ToUserHotelResponse(userHotel domain.UserHotel) web.UserHotelResponse {
 	return web.UserHotelResponse{
 		Id:            userHotel.Id,
-		HotelId:       userHotel.HotelId,
 		UserProfileId: userHotel.UserProfileId,
+		HotelId:       userHotel.HotelId,
 	}
 }
 
@@ -98,6 +66,18 @@ func ToHotelResponse(hotel domain.Hotel) web.HotelResponse {
 	}
 }
 
+func ToHotel(hotel web.HotelResponse) domain.Hotel {
+	return domain.Hotel{
+		Id:       hotel.Id,
+		Name:     hotel.Name,
+		Address:  hotel.Address,
+		Province: hotel.Province,
+		City:     hotel.City,
+		ZipCode:  hotel.ZipCode,
+		Star:     hotel.Star,
+	}
+}
+
 func ToHotelResponses(hotels []domain.Hotel) []web.HotelResponse {
 	var hotelResponses []web.HotelResponse
 	for _, hotel := range hotels {
@@ -111,7 +91,6 @@ func ToFloorResponse(floor domain.Floor) web.FloorResponse {
 		Id:      floor.Id,
 		Number:  floor.Number,
 		HotelId: floor.HotelId,
-		RoomId:  floor.RoomId,
 	}
 }
 
@@ -121,4 +100,47 @@ func ToFloorResponses(floors []domain.Floor) []web.FloorResponse {
 		floorResponses = append(floorResponses, ToFloorResponse(floor))
 	}
 	return floorResponses
+}
+
+func ToEmployeeResponse(employee domain.Employee) web.EmployeeResponse {
+	return web.EmployeeResponse{
+		Id:       employee.Id,
+		Name:     employee.Name,
+		Gender:   employee.Gender,
+		Email:    employee.Email,
+		Password: employee.Password,
+	}
+}
+
+func ToEmployee(employee web.EmployeeResponse) domain.Employee {
+	return domain.Employee{
+		Id:       employee.Id,
+		Name:     employee.Name,
+		Gender:   employee.Gender,
+		Email:    employee.Email,
+		Password: employee.Password,
+	}
+}
+
+func ToEmployeeResponses(employee []domain.Employee) []web.EmployeeResponse {
+	var employeeResponses []web.EmployeeResponse
+	for _, employee := range employee {
+		employeeResponses = append(employeeResponses, ToEmployeeResponse(employee))
+	}
+	return employeeResponses
+}
+
+func ToRoleResponse(role domain.Role) web.RoleResponse {
+	return web.RoleResponse{
+		Id:   role.Id,
+		Type: role.Type,
+	}
+}
+
+func ToRoleResponses(roles []domain.Role) []web.RoleResponse {
+	var roleResponses []web.RoleResponse
+	for _, role := range roles {
+		roleResponses = append(roleResponses, ToRoleResponse(role))
+	}
+	return roleResponses
 }

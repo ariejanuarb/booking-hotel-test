@@ -6,6 +6,7 @@ import (
 	"errors"
 	"programmerzamannow/belajar-golang-restful-api/helper"
 	"programmerzamannow/belajar-golang-restful-api/model/domain"
+	"programmerzamannow/belajar-golang-restful-api/model/web"
 )
 
 type HotelRepositoryImpl struct {
@@ -41,15 +42,15 @@ func (repository *HotelRepositoryImpl) Delete(ctx context.Context, tx *sql.Tx, h
 	helper.PanicIfError(err)
 }
 
-func (repository *HotelRepositoryImpl) FindById(ctx context.Context, tx *sql.Tx, hotelId int) (domain.Hotel, error) {
-	SQL := "select id, name, address, province, city, zip_code, star from hotel where id = ?"
+func (repository *HotelRepositoryImpl) FindById(ctx context.Context, tx *sql.Tx, hotelId int) (web.HotelResponse, error) {
+	SQL := "select h.id, h.name, h.address, h.province, h.city, h.zip_code, h.star, (select COUNT(uh.id) from user_hotel uh where uh.hotel_id = h.id) as total_employee, (select COUNT(DISTINCT(f.number)) from floor f where f.hotel_id = h.id), (select COUNT(f.room_id) from floor f where f.hotel_id = h.id) from hotel h where h.id = ? group by h.id"
 	rows, err := tx.QueryContext(ctx, SQL, hotelId)
 	helper.PanicIfError(err)
 	defer rows.Close()
 
-	hotel := domain.Hotel{}
+	hotel := web.HotelResponse{}
 	if rows.Next() {
-		err := rows.Scan(&hotel.Id, &hotel.Name, &hotel.Address, &hotel.Province, &hotel.City, &hotel.ZipCode, &hotel.Star)
+		err := rows.Scan(&hotel.Id, &hotel.Name, &hotel.Address, &hotel.Province, &hotel.City, &hotel.ZipCode, &hotel.Star, &hotel.TotalEmployee, &hotel.TotalFloor, &hotel.TotalRoom)
 		helper.PanicIfError(err)
 		return hotel, nil
 	} else {
@@ -57,16 +58,16 @@ func (repository *HotelRepositoryImpl) FindById(ctx context.Context, tx *sql.Tx,
 	}
 }
 
-func (repository *HotelRepositoryImpl) FindAll(ctx context.Context, tx *sql.Tx) []domain.Hotel {
-	SQL := "select id, name, address, province, city, zip_code, star from hotel"
+func (repository *HotelRepositoryImpl) FindAll(ctx context.Context, tx *sql.Tx) []web.HotelResponse {
+	SQL := "select h.id, h.name, h.address, h.province, h.city, h.zip_code, h.star, (select COUNT(uh.id) from user_hotel uh where uh.hotel_id = h.id) as total_employee, (select COUNT(DISTINCT(f.number)) from floor f where f.hotel_id = h.id) as total_floor, (select COUNT(f.room_id) from floor f where f.hotel_id = h.id) as total_room from hotel h group by h.id"
 	rows, err := tx.QueryContext(ctx, SQL)
 	helper.PanicIfError(err)
 	defer rows.Close()
 
-	var hotels []domain.Hotel
+	var hotels []web.HotelResponse
 	for rows.Next() {
-		hotel := domain.Hotel{}
-		err := rows.Scan(&hotel.Id, &hotel.Name, &hotel.Address, &hotel.Province, &hotel.City, &hotel.ZipCode, &hotel.Star)
+		hotel := web.HotelResponse{}
+		err := rows.Scan(&hotel.Id, &hotel.Name, &hotel.Address, &hotel.Province, &hotel.City, &hotel.ZipCode, &hotel.Star, &hotel.TotalEmployee, &hotel.TotalFloor, &hotel.TotalRoom)
 		helper.PanicIfError(err)
 		hotels = append(hotels, hotel)
 	}

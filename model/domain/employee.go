@@ -1,6 +1,6 @@
 package domain
 
-type UserProfile struct {
+type Employee struct {
 	Id       int
 	Name     string
 	Gender   string

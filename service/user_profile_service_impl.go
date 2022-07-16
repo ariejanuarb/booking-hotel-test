@@ -34,11 +34,10 @@ func (service *UserProfileServiceImpl) Create(ctx context.Context, request web.U
 	defer helper.CommitOrRollback(tx)
 
 	userProfile := domain.UserProfile{
-		Email:           request.Email,
-		Password:        request.Password,
-		Name:            request.Name,
-		Gender:          request.Gender,
-		AssignedToHotel: request.AssignedToHotel,
+		Name:     request.Name,
+		Gender:   request.Gender,
+		Email:    request.Email,
+		Password: request.Password,
 	}
 
 	userProfile = service.UserProfileRepository.Save(ctx, tx, userProfile)
@@ -63,7 +62,7 @@ func (service *UserProfileServiceImpl) Update(ctx context.Context, request web.U
 	userProfile.Password = request.Password
 	userProfile.Name = request.Name
 	userProfile.Gender = request.Gender
-	userProfile.AssignedToHotel = request.AssignedToHotel
+	userProfile.RoleId = request.RoleId
 
 	userProfile = service.UserProfileRepository.Update(ctx, tx, userProfile)
 

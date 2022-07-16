@@ -20,14 +20,6 @@ func main() {
 	categoryService := service.NewCategoryService(categoryRepository, db, validate)
 	categoryController := controller.NewCategoryController(categoryService)
 
-	roleRepository := repository.NewRoleRepository()
-	roleService := service.NewRoleService(roleRepository, db, validate)
-	roleController := controller.NewRoleController(roleService)
-
-	userRoleRepository := repository.NewUserRoleRepository()
-	userRoleService := service.NewUserRoleService(userRoleRepository, db, validate)
-	userRoleController := controller.NewUserRoleController(userRoleService)
-
 	userProfileRepository := repository.NewUserProfileRepository()
 	userProfileService := service.NewUserProfileService(userProfileRepository, db, validate)
 	userProfileController := controller.NewUserProfileController(userProfileService)
@@ -44,7 +36,15 @@ func main() {
 	floorService := service.NewFloorService(floorRepository, db, validate)
 	floorController := controller.NewFloorController(floorService)
 
-	router := app.NewRouter(categoryController, roleController, userRoleController, userProfileController, userHotelController, hotelController, floorController)
+	employeeRepository := repository.NewEmployeeRepository()
+	employeeService := service.NewEmployeeService(employeeRepository, db, validate)
+	employeeController := controller.NewEmployeeController(employeeService)
+
+	roleRepository := repository.NewRoleRepository()
+	roleService := service.NewRoleService(roleRepository, db, validate)
+	roleController := controller.NewRoleController(roleService)
+
+	router := app.NewRouter(categoryController, userProfileController, userHotelController, hotelController, floorController, employeeController, roleController)
 	server := http.Server{
 		Addr:    "localhost:3000",
 		Handler: middleware.NewAuthMiddleware(router),

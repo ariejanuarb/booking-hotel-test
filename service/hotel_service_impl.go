@@ -55,21 +55,23 @@ func (service *HotelServiceImpl) Update(ctx context.Context, request web.HotelUp
 	helper.PanicIfError(err)
 	defer helper.CommitOrRollback(tx)
 
-	hotel, err := service.HotelRepository.FindById(ctx, tx, request.Id)
+	hotelResponse, err := service.HotelRepository.FindById(ctx, tx, request.Id)
 	if err != nil {
 		panic(exception.NewNotFoundError(err.Error()))
 	}
 
-	hotel.Name = request.Name
-	hotel.Address = request.Address
-	hotel.Province = request.Province
-	hotel.City = request.City
-	hotel.ZipCode = request.ZipCode
-	hotel.Star = request.Star
+	hotels := helper.ToHotel(hotelResponse)
 
-	hotel = service.HotelRepository.Update(ctx, tx, hotel)
+	hotels.Name = request.Name
+	hotels.Address = request.Address
+	hotels.Province = request.Province
+	hotels.City = request.City
+	hotels.ZipCode = request.ZipCode
+	hotels.Star = request.Star
 
-	return helper.ToHotelResponse(hotel)
+	hotels = service.HotelRepository.Update(ctx, tx, hotels)
+
+	return helper.ToHotelResponse(hotels)
 }
 
 func (service *HotelServiceImpl) Delete(ctx context.Context, hotelId int) {
@@ -77,12 +79,12 @@ func (service *HotelServiceImpl) Delete(ctx context.Context, hotelId int) {
 	helper.PanicIfError(err)
 	defer helper.CommitOrRollback(tx)
 
-	hotel, err := service.HotelRepository.FindById(ctx, tx, hotelId)
+	hotelResponse, err := service.HotelRepository.FindById(ctx, tx, hotelId)
 	if err != nil {
 		panic(exception.NewNotFoundError(err.Error()))
 	}
-
-	service.HotelRepository.Delete(ctx, tx, hotel)
+	hotels := helper.ToHotel(hotelResponse)
+	service.HotelRepository.Delete(ctx, tx, hotels)
 }
 
 func (service *HotelServiceImpl) FindById(ctx context.Context, hotelId int) web.HotelResponse {
@@ -90,12 +92,12 @@ func (service *HotelServiceImpl) FindById(ctx context.Context, hotelId int) web.
 	helper.PanicIfError(err)
 	defer helper.CommitOrRollback(tx)
 
-	hotel, err := service.HotelRepository.FindById(ctx, tx, hotelId)
+	hotels, err := service.HotelRepository.FindById(ctx, tx, hotelId)
 	if err != nil {
 		panic(exception.NewNotFoundError(err.Error()))
 	}
 
-	return helper.ToHotelResponse(hotel)
+	return hotels
 }
 
 func (service *HotelServiceImpl) FindAll(ctx context.Context) []web.HotelResponse {
@@ -105,5 +107,5 @@ func (service *HotelServiceImpl) FindAll(ctx context.Context) []web.HotelRespons
 
 	hotels := service.HotelRepository.FindAll(ctx, tx)
 
-	return helper.ToHotelResponses(hotels)
+	return hotels
 }
